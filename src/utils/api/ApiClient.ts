@@ -1,5 +1,7 @@
 import { HttpClient } from "./HttpClient";
 
+import { API_URL } from "@env";
+
 // Types
 import { Temp } from "constants/types/Temp";
 import { Info } from "constants/types/Info";
@@ -9,7 +11,7 @@ export default class ApiClient extends HttpClient {
   private static instance?: ApiClient;
 
   private constructor() {
-    super("https://katilas-direct.bernotas.me");
+    super(`${API_URL}`);
   }
 
   public static getInstance() {
