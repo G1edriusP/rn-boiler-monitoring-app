@@ -22,11 +22,12 @@ import intervals from "../constants/intervals";
 const Home = (props: any) => {
   const client = ApiClient.getInstance();
 
-  const { temp, hist, setTemp, setHist } = props.store;
+  const { temp, hist, filteredHist, setTemp, setHist, setFilteredHist } = props.store;
 
   const onChartFilterPress = useCallbackOne(
     (value: number) => {
-      setHist(getHistByTime(hist, value));
+      if (value === -1) setFilteredHist(null);
+      else setFilteredHist(getHistByTime(hist, value));
     },
     [hist],
   );
@@ -59,9 +60,9 @@ const Home = (props: any) => {
             <Text style={styles.tempText}>{temp.tempC}</Text>
           </View>
         ) : null}
-        {hist ? (
+        {filteredHist || hist ? (
           <View>
-            <Chart data={hist} />
+            <Chart data={filteredHist || hist} />
           </View>
         ) : null}
         {hist ? (

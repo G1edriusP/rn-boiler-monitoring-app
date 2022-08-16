@@ -3,13 +3,16 @@ import { makeObservable, observable, action, computed } from "mobx";
 class BoilerStore {
   temp: number = 0;
   hist = null;
+  filteredHist = null;
 
   constructor() {
     makeObservable(this, {
       temp: observable,
       hist: observable,
+      filteredHist: observable,
       setTemp: action,
       setHist: action,
+      setFilteredHist: action,
       // getTempChanged: computed,
     });
   }
@@ -20,6 +23,10 @@ class BoilerStore {
 
   setHist = (value: any) => {
     this.hist = value;
+  };
+
+  setFilteredHist = (value: any) => {
+    this.filteredHist = value;
   };
 
   // get getTempChanged() {
