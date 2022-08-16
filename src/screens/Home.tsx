@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useCallbackOne } from "use-memo-one";
 
 // Styling
@@ -7,6 +7,7 @@ import styles from "../styles/screens/Home";
 // Components
 import { View, Text, StatusBar } from "react-native";
 import { Chart, FilterButton } from "../components";
+import { inject, observer } from "mobx-react";
 
 // Api
 import { AxiosError } from "axios";
@@ -16,16 +17,12 @@ import ApiClient from "../utils/api/ApiClient";
 import { getHistByTime, parseHist } from "../utils/hist";
 
 // Constants
-import { Temp } from "constants/types/Temp";
-import { SCREEN_WIDTH } from "../constants/dimensions";
 import intervals from "../constants/intervals";
 
-const Home = () => {
+const Home = (props: any) => {
   const client = ApiClient.getInstance();
 
-  const [temp, setTemp] = useState<Temp>();
-  const [hist, setHist] = useState();
-  const [offset, setOffset] = useState<number>(0); // Offset value for pointer label component
+  const { temp, hist, setTemp, setHist } = props.store;
 
   const onChartFilterPress = useCallbackOne(
     (value: number) => {
@@ -33,11 +30,6 @@ const Home = () => {
     },
     [hist],
   );
-
-  const onPointerScroll = useCallbackOne(data => {
-    if (data.pointerX < SCREEN_WIDTH / 2) setOffset(50);
-    else setOffset(-50);
-  }, []);
 
   useEffect(() => {
     client.getTemp().then(res => setTemp(res));
@@ -48,14 +40,14 @@ const Home = () => {
     const tempInterval = setInterval(() => {
       client.getTemp().then(res => setTemp(res));
     }, intervals.TEMP);
+    return () => clearInterval(tempInterval);
+  });
+
+  useEffect(() => {
     const histInterval = setInterval(() => {
       client.getHist().then(res => setHist(parseHist(res)));
     }, intervals.HIST);
-
-    return () => {
-      clearInterval(tempInterval);
-      clearInterval(histInterval);
-    };
+    return () => clearInterval(histInterval);
   });
 
   return (
@@ -69,7 +61,7 @@ const Home = () => {
         ) : null}
         {hist ? (
           <View>
-            <Chart data={hist} offset={offset} onScroll={onPointerScroll} />
+            <Chart data={hist} />
           </View>
         ) : null}
         {hist ? (
@@ -85,4 +77,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default inject("store")(observer(Home));
