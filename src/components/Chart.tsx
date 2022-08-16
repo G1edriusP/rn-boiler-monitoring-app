@@ -1,5 +1,5 @@
-import React, { FC, memo } from "react";
-import { useMemoOne } from "use-memo-one";
+import React, { FC, useState } from "react";
+import { useCallbackOne, useMemoOne } from "use-memo-one";
 
 // Styling
 import styles from "../styles/components/Chart";
@@ -7,6 +7,7 @@ import styles from "../styles/components/Chart";
 // Components
 import { PointerLabel } from "../components";
 import { LineChart } from "react-native-gifted-charts";
+import { observer } from "mobx-react";
 
 // Constants
 import { Colors } from "../constants/theme";
@@ -14,11 +15,16 @@ import { SCREEN_WIDTH } from "../constants/dimensions";
 
 type Props = {
   data: any;
-  offset: number;
-  onScroll: (data: any) => void;
 };
 
-const Chart: FC<Props> = memo(({ data, offset, onScroll }) => {
+const Chart: FC<Props> = ({ data }) => {
+  const [offset, setOffset] = useState<number>(0);
+
+  const onPointerScroll = useCallbackOne(data => {
+    if (data.pointerX < SCREEN_WIDTH / 2) setOffset(50);
+    else setOffset(-50);
+  }, []);
+
   const pointerConfig = useMemoOne(
     () => ({
       pointerStripColor: Colors.WHITE,
@@ -62,10 +68,10 @@ const Chart: FC<Props> = memo(({ data, offset, onScroll }) => {
       yAxisLabelWidth={-1}
       xAxisColor='gray'
       xAxisType={"dot"}
-      getPointerProps={onScroll}
+      getPointerProps={onPointerScroll}
       pointerConfig={pointerConfig}
     />
   );
-});
+};
 
-export default Chart;
+export default observer(Chart);
