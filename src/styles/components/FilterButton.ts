@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-import { Colors } from "../../constants/theme";
+import { Colors, Fonts } from "../../constants/theme";
 
 export default StyleSheet.create({
   wrap: {
@@ -13,7 +13,9 @@ export default StyleSheet.create({
     borderRadius: 8,
   },
   text: {
-    color: Colors.WHITE,
+    // fontFamily: Fonts.SEMIBOLD,
     fontWeight: "bold",
+    fontSize: 14,
+    color: Colors.WHITE,
   },
 });

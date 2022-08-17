@@ -6,7 +6,7 @@ import styles from "../styles/screens/Home";
 
 // Components
 import { View, Text, StatusBar } from "react-native";
-import { Chart, FilterButton } from "../components";
+import { Chart, FilterButton, Loader } from "../components";
 import { inject, observer } from "mobx-react";
 
 // Api
@@ -18,6 +18,7 @@ import { getHistByTime, parseHist } from "../utils/hist";
 
 // Constants
 import intervals from "../constants/intervals";
+import { Colors } from "../constants/theme";
 
 const Home = (props: any) => {
   const client = ApiClient.getInstance();
@@ -51,30 +52,28 @@ const Home = (props: any) => {
     return () => clearInterval(histInterval);
   });
 
-  return (
+  return temp && hist ? (
     <>
       <StatusBar barStyle={"light-content"} backgroundColor='transparent' translucent />
       <View style={styles.wrap}>
-        {temp ? (
-          <View style={styles.tempWrap}>
-            <Text style={styles.tempText}>{temp.tempC}</Text>
-          </View>
-        ) : null}
-        {filteredHist || hist ? (
-          <View>
-            <Chart data={filteredHist || hist} />
-          </View>
-        ) : null}
-        {hist ? (
-          <View style={styles.filterBtnsWrap}>
-            <FilterButton onPress={onChartFilterPress} label={"12H"} value={12} />
-            <FilterButton onPress={onChartFilterPress} label={"1D"} value={24} />
-            <FilterButton onPress={onChartFilterPress} label={"3D"} value={72} />
-            <FilterButton onPress={onChartFilterPress} label={"ALL"} value={-1} />
-          </View>
-        ) : null}
+        <View style={styles.tempWrap}>
+          <Text style={styles.tempText}>{temp.tempC}</Text>
+        </View>
+        <View>
+          <Chart data={filteredHist || hist} />
+        </View>
+        <View style={styles.filterBtnsWrap}>
+          <FilterButton onPress={onChartFilterPress} label={"12H"} value={12} />
+          <FilterButton onPress={onChartFilterPress} label={"1D"} value={24} />
+          <FilterButton onPress={onChartFilterPress} label={"3D"} value={72} />
+          <FilterButton onPress={onChartFilterPress} label={"ALL"} value={-1} />
+        </View>
       </View>
     </>
+  ) : (
+    <View style={[styles.wrap, { justifyContent: "center" }]}>
+      <Loader size={"small"} color={Colors.GREEN} />
+    </View>
   );
 };
 

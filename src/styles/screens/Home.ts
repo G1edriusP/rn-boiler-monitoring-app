@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-import { Colors } from "../../constants/theme";
+import { Colors, Fonts } from "../../constants/theme";
 
 export default StyleSheet.create({
   wrap: {
@@ -17,6 +17,7 @@ export default StyleSheet.create({
     fontSize: 36,
     padding: 32,
     marginBottom: 32,
+    fontFamily: Fonts.SEMIBOLD,
   },
   filterBtnsWrap: {
     flexDirection: "row",

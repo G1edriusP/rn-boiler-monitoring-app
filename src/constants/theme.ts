@@ -6,3 +6,8 @@ export const Colors = {
   DARK_GRAY: "#242526",
   GREEN: "#00ff83",
 };
+
+export const Fonts = {
+  REGULAR: "Nunito-Regular",
+  SEMIBOLD: "Nunito-SemiBold",
+};
